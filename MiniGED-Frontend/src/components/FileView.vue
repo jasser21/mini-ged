@@ -118,7 +118,9 @@ import PageViewComponent from "./PageViewComponent.vue";
 
 import { ref, computed, onMounted } from "vue";
 import { usePDF } from "@tato30/vue-pdf";
-const src = ref("http://localhost:5092/api/document/pdf/8016");
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5092/api";
+const src = ref(`${API_BASE_URL}/document/pdf/8016`);
 // const showModal = ref(false);
 const props = defineProps({
     selected: Number,
@@ -131,7 +133,7 @@ onMounted(async () =>  {
     console.log(props.selected);
 
     if (props.selected) {
-        src.value = `http://localhost:5092/api/document/pdf/${props.selected}`;
+        src.value = `${API_BASE_URL}/document/pdf/${props.selected}`;
         console.log('inmoutn', src.value);
     }
     else {
@@ -148,12 +150,12 @@ onMounted(async () =>  {
 );
 
 watch(() => props.selected, (newValue) => {
-    src.value = `http://localhost:5092/api/document/pdf/${newValue}`;
+    src.value = `${API_BASE_URL}/document/pdf/${newValue}`;
 }
 );
 const refresh = () => {
     // force a component rerender
-    src.value = `http://localhost:5092/api/document/pdf/${props.selected}`;
+    src.value = `${API_BASE_URL}/document/pdf/${props.selected}`;
 };
 
 const scrollToPage = (pageNumber) => {
