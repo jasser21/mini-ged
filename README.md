@@ -15,13 +15,23 @@ The entire application stack can be run using Docker Compose.
 
 1. Clone the repository
 2. Navigate to the root directory
-3. (Optional) Run the validation script to check your Docker setup:
+3. Create a `.env` file from the example template:
+
+```bash
+cp .env.example .env
+```
+
+4. Edit `.env` and set your own secure passwords and keys:
+   - `SA_PASSWORD`: Strong password for SQL Server (minimum 8 characters, must include uppercase, lowercase, numbers, and symbols)
+   - `MEILI_MASTER_KEY`: Master key for Meilisearch (minimum 16 characters)
+
+5. (Optional) Run the validation script to check your Docker setup:
 
 ```bash
 ./validate-docker-setup.sh
 ```
 
-4. Run the following command:
+6. Run the following command:
 
 ```bash
 docker compose up -d
@@ -74,12 +84,12 @@ docker compose up -d
 #### SQL Server
 - Port: 1433
 - Username: sa
-- Password: Test123!@#Strong
+- Password: Set via `SA_PASSWORD` environment variable (see .env.example)
 - Database: MiniGed
 
 #### Meilisearch
 - Port: 7700
-- Master Key: AA9shxrd4zOvVJ31NKOoEhC_p9h01XqcyJfmVth7H50
+- Master Key: Set via `MEILI_MASTER_KEY` environment variable (see .env.example)
 
 ### Stopping the Services
 

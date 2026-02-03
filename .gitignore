@@ -1,0 +1,7 @@
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+
+# Docker volumes
+meili_data/
