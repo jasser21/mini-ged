@@ -9,7 +9,7 @@ The entire application stack can be run using Docker Compose.
 ### Prerequisites
 
 - Docker
-- Docker Compose
+- Docker Compose (or Docker with Compose plugin)
 
 ### Quick Start
 
@@ -18,7 +18,7 @@ The entire application stack can be run using Docker Compose.
 3. Run the following command:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 This will start all services:
@@ -27,6 +27,22 @@ This will start all services:
 - **Swagger UI**: Available at http://localhost:8080/swagger (Development mode)
 - **Meilisearch**: Available at http://localhost:7700
 - **SQL Server**: Available at localhost:1433
+
+### Building with Docker Buildx (Cloud Build)
+
+If you encounter network issues during local builds, you can use Docker Buildx with cloud builders for a more robust build experience:
+
+```bash
+# Create a buildx builder instance
+docker buildx create --name miniged-builder --driver docker-container --bootstrap --use
+
+# Build all images using buildx
+docker buildx build --platform linux/amd64 -t miniged-frontend:latest ./MiniGED-Frontend --load
+docker buildx build --platform linux/amd64 -t miniged-backend:latest ./MiniGED.Backend --load
+
+# Then run with docker compose
+docker compose up -d
+```
 
 ### Services
 
@@ -54,25 +70,34 @@ This will start all services:
 ### Stopping the Services
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### Rebuilding After Changes
 
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ### Viewing Logs
 
 ```bash
 # All services
-docker-compose logs -f
+docker compose logs -f
 
 # Specific service
-docker-compose logs -f backend
-docker-compose logs -f frontend
+docker compose logs -f backend
+docker compose logs -f frontend
 ```
+
+### Troubleshooting
+
+#### Network Issues During Build
+If you experience network timeouts during the build process, try:
+1. Using Docker Buildx as shown above
+2. Increasing Docker's network timeout settings
+3. Building on a machine with better network connectivity
+4. Using pre-built images if available
 
 ### Development
 
