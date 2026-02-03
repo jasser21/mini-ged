@@ -1,0 +1,24 @@
+services:
+  meilisearch:
+    image: getmeili/meilisearch
+    container_name: meilisearch
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=AA9shxrd4zOvVJ31NKOoEhC_p9h01XqcyJfmVth7H50
+    volumes:
+      - meili_data:/data.ms
+    restart: unless-stopped  # Auto-restart on failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  meili_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./meili_data  # Stores data in project dir (better than C:\)
+      o: bind
