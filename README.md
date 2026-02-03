@@ -15,7 +15,13 @@ The entire application stack can be run using Docker Compose.
 
 1. Clone the repository
 2. Navigate to the root directory
-3. Run the following command:
+3. (Optional) Run the validation script to check your Docker setup:
+
+```bash
+./validate-docker-setup.sh
+```
+
+4. Run the following command:
 
 ```bash
 docker compose up -d
