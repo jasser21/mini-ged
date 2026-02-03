@@ -36,7 +36,15 @@ This will start all services:
 
 ### Building with Docker Buildx (Cloud Build)
 
-If you encounter network issues during local builds, you can use Docker Buildx with cloud builders for a more robust build experience:
+If you encounter network issues during local builds, you can use Docker Buildx with cloud builders for a more robust build experience.
+
+#### Using the automated script:
+
+```bash
+./build-with-buildx.sh
+```
+
+#### Manual buildx commands:
 
 ```bash
 # Create a buildx builder instance
