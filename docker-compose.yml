@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: miniged-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Test123!@#Strong
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "Test123!@#Strong" -C -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - miniged-network
+
+  # Meilisearch Search Engine
+  meilisearch:
+    image: getmeili/meilisearch
+    container_name: miniged-meilisearch
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=AA9shxrd4zOvVJ31NKOoEhC_p9h01XqcyJfmVth7H50
+    volumes:
+      - meili_data:/meili_data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - miniged-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./MiniGED.Backend
+      dockerfile: Dockerfile
+    container_name: miniged-backend
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=MiniGed;User ID=sa;Password=Test123!@#Strong;TrustServerCertificate=True;
+      - ConnectionStrings__HangfireConnection=Hangfire.db
+      - Meilisearch__Url=http://meilisearch:7700
+      - Meilisearch__MasterKey=AA9shxrd4zOvVJ31NKOoEhC_p9h01XqcyJfmVth7H50
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+    volumes:
+      - backend_uploads:/app/Resource
+      - backend_hangfire:/app
+    restart: unless-stopped
+    networks:
+      - miniged-network
+
+  # Frontend Web App
+  frontend:
+    build:
+      context: ./MiniGED-Frontend
+      dockerfile: Dockerfile
+    container_name: miniged-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - miniged-network
+
+volumes:
+  sqlserver_data:
+    driver: local
+  meili_data:
+    driver: local
+  backend_uploads:
+    driver: local
+  backend_hangfire:
+    driver: local
+
+networks:
+  miniged-network:
+    driver: bridge

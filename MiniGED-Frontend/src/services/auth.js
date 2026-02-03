@@ -3,7 +3,7 @@ import apiClient from "./api";
 import userService from "./userService";
 import { defineStore } from "pinia";
 
-const API_URL = "http://localhost:5092/api/account"; // Remplacez par votre URL d'API
+const API_URL = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:5092/api"}/account`;
 
 class AuthService {
   async login(credentials) {

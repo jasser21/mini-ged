@@ -2,9 +2,7 @@ import apiClient from "./api";
 
 export async function getUserDocuments() {
   try {
-    const response = await apiClient.get("/document", {
-      baseURL: "http://localhost:5092/api",
-    });
+    const response = await apiClient.get("/document");
     return response.data;
   } catch (error) {
     console.error("Erreur lors du chargement des documents :", error);
@@ -14,9 +12,7 @@ export async function getUserDocuments() {
 
 export async function deleteDocument(documentId) {
   try {
-    const response = await apiClient.delete(`/document/${documentId}`, {
-      baseURL: "http://localhost:5092/api",
-    });
+    const response = await apiClient.delete(`/document/${documentId}`);
     return response.data;
   } catch (error) {
     console.error("Erreur lors de la suppression du document :", error);
@@ -26,9 +22,7 @@ export async function deleteDocument(documentId) {
 
 export async function getDocumentById(documentId) {
   try {
-    const response = await apiClient.get(`/document/${documentId}`, {
-      baseURL: "http://localhost:5092/api",
-    });
+    const response = await apiClient.get(`/document/${documentId}`);
     return response.data;
   } catch (error) {
     console.error("Erreur lors du chargement du document :", error);
